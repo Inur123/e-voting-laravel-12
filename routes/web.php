@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+
+use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\PaslonController as AdminPaslonController;
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -13,7 +15,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/token', 'admin.token')->name('token');
     Route::view('/hasil', 'admin.hasil')->name('hasil');
     Route::resource('paslon', AdminPaslonController::class);
+    Route::resource('token', TokenController::class);
+
 });

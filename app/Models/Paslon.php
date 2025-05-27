@@ -15,4 +15,10 @@ class Paslon extends Model
         'visi_misi',
         'total_pemilih',
     ];
+
+    public function votingTokens()
+{
+    return $this->hasMany(VotingToken::class);
+}
+
 }

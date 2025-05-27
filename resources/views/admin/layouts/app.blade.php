@@ -80,49 +80,52 @@
     <div x-data="adminDashboard()" class="min-h-screen">
         <!-- Modern Navigation -->
         <nav class="glass sticky top-0 z-50 border-b border-white/20">
-    <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-gray-900">E-Voting</h1>
-                    <p class="text-sm text-gray-600">Admin Dashboard</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <a href="{{ route('admin.paslon.index') }}"
-                    class="px-4 py-2 rounded-xl font-medium transition-all duration-200
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">E-Voting</h1>
+                            <p class="text-sm text-gray-600">Admin Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('admin.paslon.index') }}"
+                            class="px-4 py-2 rounded-xl font-medium transition-all duration-200
                     {{ request()->routeIs('admin.paslon.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-gray-600 hover:text-gray-900' }}">
-                    Paslon
-                </a>
+                            Paslon
+                        </a>
 
-                <a href="{{ route('admin.token') }}"
-                    class="px-4 py-2 rounded-xl font-medium transition-all duration-200
-                    {{ request()->routeIs('admin.token') ? 'bg-white text-blue-600 shadow-lg' : 'text-gray-600 hover:text-gray-900' }}">
-                    Token
-                </a>
-                <a href="{{ route('admin.hasil') }}"
-                    class="px-4 py-2 rounded-xl font-medium transition-all duration-200
+                        <a href="{{ route('admin.token.index') }}"
+                            class="px-4 py-2 rounded-xl font-medium transition-all duration-200
+   {{ request()->routeIs('admin.token.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-gray-600 hover:text-gray-900' }}">
+                            Token
+                        </a>
+
+                        <a href="{{ route('admin.hasil') }}"
+                            class="px-4 py-2 rounded-xl font-medium transition-all duration-200
                     {{ request()->routeIs('admin.hasil') ? 'bg-white text-blue-600 shadow-lg' : 'text-gray-600 hover:text-gray-900' }}">
-                    Hasil
-                </a>
+                            Hasil
+                        </a>
 
-                 <form action="{{ route('logout') }}" method="POST">
-    @csrf
-    <button type="submit" class="px-4 py-2 text-gray-600 hover:text-gray-900 transition-all duration-200">
-        <i class="ri-logout-circle-r-line cursor-pointer"></i>
-    </button>
-</form>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="px-4 py-2 text-gray-600 hover:text-gray-900 transition-all duration-200">
+                                <i class="ri-logout-circle-r-line cursor-pointer"></i>
+                            </button>
+                        </form>
 
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</nav>
+        </nav>
 
         <div class="max-w-7xl mx-auto px-6 py-8">
             @yield('content')
