@@ -30,7 +30,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 Route::controller(TokenAuthController::class)->group(function () {
     Route::get('/token-login', 'showTokenForm')->name('token.login');
     Route::post('/token-login', 'processTokenLogin');
-    Route::post('/logout', 'logout')->name('token.logout');
+     Route::post('/token-logout', 'logout')->name('token.logout');
 });
 
 // Route voting dengan pengecekan token

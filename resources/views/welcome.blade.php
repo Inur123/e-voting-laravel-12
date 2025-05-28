@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Voting - E-Voting</title>
-
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -30,10 +29,17 @@
             0%, 100% { opacity: 1; }
             50% { opacity: .5; }
         }
+        .refresh-indicator {
+            transition: all 0.3s ease;
+        }
+        .refreshing {
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
-    <div x-data="hasilVoting()" class="min-h-screen">
+    <div x-data="hasilVoting()" x-init="init()" class="min-h-screen">
         <header class="glass sticky top-0 z-50 border-b border-white/20">
             <div class="max-w-7xl mx-auto px-6 py-6">
                 <div class="text-center">
@@ -59,50 +65,50 @@
 
         <div class="max-w-7xl mx-auto px-6 py-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20">
+                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20 refresh-indicator" :class="{'refreshing': loading}">
                     <div class="text-center">
                         <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
                         </div>
-                        <div class="text-3xl font-bold text-gray-900 mb-1">{{ $totalTokens }}</div>
+                        <div class="text-3xl font-bold text-gray-900 mb-1" x-text="totalTokens"></div>
                         <div class="text-gray-600 text-sm">Total Pemilih</div>
                     </div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20">
+                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20 refresh-indicator" :class="{'refreshing': loading}">
                     <div class="text-center">
                         <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="text-3xl font-bold text-emerald-600 mb-1">{{ $usedTokens }}</div>
+                        <div class="text-3xl font-bold text-emerald-600 mb-1" x-text="usedTokens"></div>
                         <div class="text-gray-600 text-sm">Sudah Voting</div>
                     </div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20">
+                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20 refresh-indicator" :class="{'refreshing': loading}">
                     <div class="text-center">
                         <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="text-3xl font-bold text-amber-600 mb-1">{{ $unusedTokens }}</div>
+                        <div class="text-3xl font-bold text-amber-600 mb-1" x-text="unusedTokens"></div>
                         <div class="text-gray-600 text-sm">Belum Voting</div>
                     </div>
                 </div>
 
-                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20">
+                <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-6 card-hover border border-white/20 refresh-indicator" :class="{'refreshing': loading}">
                     <div class="text-center">
                         <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                             </svg>
                         </div>
-                        <div class="text-3xl font-bold text-purple-600 mb-1">{{ $percentageUsed }}%</div>
+                        <div class="text-3xl font-bold text-purple-600 mb-1" x-text="`${percentageUsed}%`"></div>
                         <div class="text-gray-600 text-sm">Partisipasi</div>
                     </div>
                 </div>
@@ -111,46 +117,66 @@
     </div>
 
     <script>
-  function hasilVoting() {
-    return {
-        currentTime: new Date().toLocaleTimeString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        }),
-        totalTokens: {{ $totalTokens }},
-        usedTokens: {{ $usedTokens }},
-        unusedTokens: {{ $unusedTokens }},
-        percentageUsed: {{ $percentageUsed }},
-        init() {
-            setInterval(() => {
-                this.currentTime = new Date().toLocaleTimeString('id-ID', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
+    function hasilVoting() {
+        return {
+            currentTime: new Date().toLocaleTimeString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }),
+            totalTokens: {{ $totalTokens }},
+            usedTokens: {{ $usedTokens }},
+            unusedTokens: {{ $unusedTokens }},
+            percentageUsed: {{ $percentageUsed }},
+            loading: false,
 
-                // Contoh polling data (ubah URL sesuai endpoint API kamu)
-                fetch('/api/hasil-voting')
-                    .then(res => res.json())
-                    .then(data => {
-                        this.totalTokens = data.totalTokens;
-                        this.usedTokens = data.usedTokens;
-                        this.unusedTokens = data.unusedTokens;
-                        this.percentageUsed = data.percentageUsed;
+            init() {
+                // Update waktu setiap detik
+                setInterval(() => {
+                    this.currentTime = new Date().toLocaleTimeString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
                     });
-            }, 10000); // update setiap 10 detik
+                }, 1000);
+
+                // Update data voting setiap 5 detik
+                this.refreshData();
+                setInterval(() => {
+                    this.refreshData();
+                }, 5000);
+            },
+
+            refreshData() {
+                this.loading = true;
+                fetch('/', {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.totalTokens = data.totalTokens;
+                    this.usedTokens = data.usedTokens;
+                    this.unusedTokens = data.unusedTokens;
+                    this.percentageUsed = data.percentageUsed;
+                })
+                .catch(error => {
+                    console.error('Error refreshing data:', error);
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+            }
         }
     }
-}
-
-</script>
-
+    </script>
 </body>
 </html>

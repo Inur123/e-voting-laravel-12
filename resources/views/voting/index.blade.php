@@ -243,75 +243,93 @@
         </div>
     </div>
 
-    <script>
-        function votingPage() {
-            return {
-                selectedPaslon: null,
-                showConfirmation: false,
-                votingComplete: false,
-                submitting: false,
+  <script>
+    function votingPage() {
+        return {
+            selectedPaslon: null,
+            showConfirmation: false,
+            votingComplete: false,
+            submitting: false,
 
-                selectPaslon(id, nomorUrut, nama, visiMisi, gambar) {
-                    this.selectedPaslon = {
-                        id: id,
-                        nomor_urut: nomorUrut,
-                        nama: nama,
-                        visi_misi: visiMisi,
-                        gambar: gambar
-                    };
-                },
+            init() {
+                // Cek jika sudah pernah voting
+                if (localStorage.getItem('hasVoted') === 'true') {
+                    this.votingComplete = true;
+                    setTimeout(() => {
+                        window.location.href = "{{ route('token.login') }}";
+                    }, 2000);
+                }
 
-                confirmVote() {
-                    if (this.selectedPaslon) {
-                        this.showConfirmation = true;
-                    }
-                },
+                // Ganti URL dan mencegah kembali
+                history.pushState(null, null, location.href);
+                window.onpopstate = function() {
+                    history.go(1);
+                };
+            },
 
-                async submitVote() {
-                    this.submitting = true;
+            selectPaslon(id, nomorUrut, nama, visiMisi, gambar) {
+                this.selectedPaslon = {
+                    id: id,
+                    nomor_urut: nomorUrut,
+                    nama: nama,
+                    visi_misi: visiMisi,
+                    gambar: gambar
+                };
+            },
 
-                    try {
-                        const response = await fetch("{{ route('voting.submit') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                paslon_id: this.selectedPaslon.id
-                            })
-                        });
+            confirmVote() {
+                if (this.selectedPaslon) {
+                    this.showConfirmation = true;
+                }
+            },
 
-                        if (response.ok) {
-                            this.submitting = false;
-                            this.showConfirmation = false;
-                            // Tampilkan pesan sukses sebentar lalu logout otomatis
-                            this.votingComplete = true;
+            async submitVote() {
+                this.submitting = true;
 
-                            // Auto logout setelah 2 detik
-                            setTimeout(() => {
-                                window.location.href = "{{ route('token.login') }}";
-                            }, 2000);
-                        } else {
-                            const errorData = await response.json();
-                            alert(errorData.message || 'Terjadi kesalahan saat memproses voting');
-                            this.submitting = false;
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan jaringan');
+                try {
+                    const response = await fetch("{{ route('voting.submit') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            paslon_id: this.selectedPaslon.id
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Tandai sudah voting di localStorage
+                        localStorage.setItem('hasVoted', 'true');
+
+                        this.submitting = false;
+                        this.showConfirmation = false;
+                        this.votingComplete = true;
+
+                        // Ganti URL dan mencegah kembali
+                        history.pushState(null, null, location.href);
+                        window.onpopstate = function() {
+                            window.location.href = "{{ route('token.login') }}";
+                        };
+
+                        // Auto logout setelah 2 detik
+                        setTimeout(() => {
+                            window.location.href = "{{ route('token.login') }}";
+                        }, 2000);
+                    } else {
+                        const errorData = await response.json();
+                        alert(errorData.message || 'Terjadi kesalahan saat memproses voting');
                         this.submitting = false;
                     }
-                },
-
-                logout() {
-                    if (confirm('Yakin ingin keluar?')) {
-                        window.location.href = "{{ route('token.login') }}";
-                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan jaringan');
+                    this.submitting = false;
                 }
             }
         }
-    </script>
+    }
+</script>
 </body>
 </html>
